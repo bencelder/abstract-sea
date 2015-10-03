@@ -29,8 +29,10 @@ function loop(){
     dt = (now - lastframe)/1000; // ms
     lastframe = now;
 
-    if (paused == 1)
+    if (paused == 1){
+        draw();
         return;
+    }
 
     player.heading = [0, 0];
 
@@ -60,8 +62,11 @@ function loop(){
     for (var i = 0; i < bullets.length; i++)
         bullets[i].update(dt)
 
+    draw();
 
-    // draw
+}
+
+function draw(){
     ctx.fillStyle = "#002447";
     ctx.fillRect(0, 0, c.width, c.height);
 
@@ -70,8 +75,6 @@ function loop(){
 
     for (var i = 0; i < bullets.length; i++)
         bullets[i].draw();
-
-
 }
 
 function Cursor(x, y){
@@ -106,14 +109,24 @@ function Bullet(x, y, vx, vy){
     }
 
     this.draw = function(){
-        ctx.fillStyle = "#FFFFFF";
-        ctx.fillRect( this.x - 5, this.y - 5, 10, 10 );
+        //ctx.fillStyle = "#FFFFFF";
+        //ctx.fillRect( this.x - 5, this.y - 5, 10, 10 );
+        ctx.strokeStyle = "#FFFFFF";
+        ctx.lineWidth = 5;
+
+        ctx.beginPath();
+        a = 50;
+        ctx.moveTo(this.x - this.vx/a, this.y - this.vy/a);
+        ctx.lineTo(this.x, this.y);
+        ctx.stroke();
     }
 }
 
 function Player(x, y){
     this.x = x;
     this.y = y;
+
+    this.size = 20;
 
     this.heading = [0, 0];
 
@@ -124,7 +137,8 @@ function Player(x, y){
 
     this.draw = function(){
         ctx.fillStyle = "#FFFFFF";
-        ctx.fillRect( this.x - 5, this.y - 5, 10, 10 );
+        ctx.fillRect( this.x - this.size/2, this.y - this.size/2,
+                this.size, this.size );
     }
 
     this.update = function(dt){
