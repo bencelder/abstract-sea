@@ -5,6 +5,13 @@ function add_vec( v1, v2 ){
     return v;
 }
 
+function sub_vec( v1, v2 ){
+    v = [];
+    for (var i = 0; i < v1.length; i++)
+        v.push( v1[i] - v2[i] );
+    return v;
+}
+
 function dot_vec( v1, v2 ){
     sum = 0;
     for (var i = 0; i < v1.length; i++)
