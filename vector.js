@@ -36,3 +36,11 @@ function norm_vec( v1 ){
     v =  mul_vec( 1./mag, v1 );
     return v;
 }
+
+function polar_vec( v ){
+    r = Math.sqrt( dot_vec( v, v) );
+    theta = Math.asin( v[1] / r ); // between -pi/2 and pi/2
+    if (v[0] < 0)
+        theta = Math.PI - theta;
+    return [r, theta];
+}

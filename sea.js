@@ -13,11 +13,13 @@ function initialize(){
 
     patrols = [];
 
+    time_between_patrols = 1000; // ms
+    last_patrol = Date.now();
     p = new Patrol(100, 100);
     patrols.push(p);
 
     var music = new Audio("tangerine_dreams.mp3");
-    //music.play();
+    music.play();
 
     lastframe = Date.now();
     game_loop = setInterval( function(){loop()}, 1);
@@ -25,27 +27,33 @@ function initialize(){
 
 function loop(){
     now = Date.now();
-    dt = (now - lastframe)/1000; // ms
+    dt = (now - lastframe)/1000;
     lastframe = now;
 
+    // pause
     if (paused == 1){
         draw();
         return;
     }
 
-    player.heading = [0, 0];
+    // create new objects
+    if (now - last_patrol > time_between_patrols){
+        // choose a side to start from
+        var side = Math.floor( Math.random()*4 );
+        if (side == 0)
+            p = new Patrol( -20, Math.random()*c.height );
+        if (side == 1)
+            p = new Patrol( Math.random()*c.width, -20);
+        if (side == 2)
+            p = new Patrol( c.width + 20, Math.random()*c.height );
+        if (side == 3)
+            p = new Patrol( Math.random()*c.width, c.height + 20 );
 
-    // input
-    // (move to Player class?)
-    if (keys[65])
-        player.heading[0] = -1;
-    if (keys[68])
-        player.heading[0] = 1;
-    if (keys[83])
-        player.heading[1] = 1;
-    if (keys[87])
-        player.heading[1] = -1;
+        patrols.push(p);
+        last_patrol = now;
+    }
 
+    // update game objects
     player.update(dt);
 
     for (var i = 0; i < bullets.length; i++)
@@ -67,14 +75,15 @@ function loop(){
     new_patrols = [];
     for (var i = 0; i < patrols.length; i++){
         p = patrols[i];
-        if (now - p.created > p.duration)
-            continue;
+        //if (now - p.created > p.duration)
+            //continue;
         if (p.health < 0)
             continue;
         new_patrols.push(p);
     }
     patrols = new_patrols;
 
+    // draw everything
     draw();
 
 }
